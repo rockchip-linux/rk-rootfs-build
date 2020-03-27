@@ -32,10 +32,9 @@ echo -e "\033[36m Copy overlay to rootfs \033[0m"
 sudo mkdir -p $TARGET_ROOTFS_DIR/packages
 sudo cp -rf packages/$ARCH/* $TARGET_ROOTFS_DIR/packages
 
-# some configs
-sudo cp -rf overlay/etc $TARGET_ROOTFS_DIR/
-sudo cp -rf overlay/lib $TARGET_ROOTFS_DIR/usr/
-sudo cp -rf overlay/usr $TARGET_ROOTFS_DIR/
+# Copy overlay/firmware
+sudo cp -rf overlay/* $TARGET_ROOTFS_DIR/
+sudo cp -rf overlay-firmware/* $TARGET_ROOTFS_DIR/
 
 if [ "$ARCH" == "armhf"  ]; then
     sudo cp overlay-firmware/usr/bin/brcm_patchram_plus1_32 $TARGET_ROOTFS_DIR/usr/bin/brcm_patchram_plus1
@@ -50,16 +49,17 @@ sudo mkdir -p $TARGET_ROOTFS_DIR/system/lib/modules/
 sudo find ../kernel/drivers/net/wireless/rockchip_wlan/*  -name "*.ko" | \
     xargs -n1 -i sudo cp {} $TARGET_ROOTFS_DIR/system/lib/modules/
 
-sudo cp -rf overlay-firmware/etc $TARGET_ROOTFS_DIR/
-sudo cp -rf overlay-firmware/lib $TARGET_ROOTFS_DIR/usr/
-sudo cp -rf overlay-firmware/usr $TARGET_ROOTFS_DIR/
-
 # adb
 if [ "$ARCH" == "armhf" ]; then
 	sudo cp -rf overlay-debug/usr/local/share/adb/adbd-32 $TARGET_ROOTFS_DIR/usr/local/bin/adbd
 elif [ "$ARCH" == "arm64"  ]; then
 	sudo cp -rf overlay-debug/usr/local/share/adb/adbd-64 $TARGET_ROOTFS_DIR/usr/local/bin/adbd
 fi
+
+# rga
+sudo mkdir -p $TARGET_ROOTFS_DIR/usr/include/rga
+sudo cp packages/$ARCH/rga/include/*      $TARGET_ROOTFS_DIR/usr/include/rga/
+sudo cp packages/$ARCH/rga/lib/librga.so  $TARGET_ROOTFS_DIR/usr/lib/
 
 # glmark2
 sudo rm -rf $TARGET_ROOTFS_DIR/usr/local/share/glmark2
@@ -131,11 +131,11 @@ apt-get install -f -y
 
 #---------------Video--------------
 echo -e "\033[36m Setup Video.................... \033[0m"
-apt-get install -y gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-alsa \
-	gstreamer1.0-plugins-good  gstreamer1.0-plugins-bad alsa-utils
-
-dpkg -i  /packages/video/mpp/*.deb
-dpkg -i  /packages/video/gstreamer/*.deb
+aapt-get install -y gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-alsa gstreamer1.0-plugins-base-apps
+dpkg -i  /packages/video/mpp/*
+dpkg -i  /packages/gst-rkmpp/*.deb
+dpkg -i  /packages/gst-base/*.deb
+apt-mark hold gstreamer1.0-x
 apt-get install -f -y
 
 #---------------Qt-Video--------------
