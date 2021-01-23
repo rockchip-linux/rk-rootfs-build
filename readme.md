@@ -8,7 +8,20 @@ for rockchip platform.
 * Debian 10 (Buster-X11 and Wayland)~~
 
 ```
-sudo apt-get install binfmt-support qemu-user-static
+sudo apt-get install adduser debian-archive-keyring fdisk gcc-8-base gpgv \
+    libacl1 libapt-pkg5.0 libattr1 libaudit-common libaudit1 libblkid1 libbz2-1.0 \
+    libc6 libcap-ng0 libcom-err2 libdb5.3 libdebconfclient0 libext2fs2 libfdisk1 \
+    libffi6 libgcc1 libgcrypt20 libgmp10 libgnutls30 libgpg-error0 libhogweed4 \
+    libidn2-0 liblz4-1 liblzma5 libmount1 libncursesw6 libnettle6 libp11-kit0 \
+    libpam0g libpcre3 libseccomp2 libselinux1 libsemanage-common libsemanage1 \
+    libsepol1 libsmartcols1 libss2 libstdc++6 libsystemd0 libtasn1-6 libtinfo6 \
+    libudev1 libunistring2 libuuid1 libzstd1 zlib1g
+sudo apt-get install dirmngr gnupg-l10n gnupg-utils gpg gpg-agent \
+    gpg-wks-client gpg-wks-server gpgconf gpgsm libassuan0 libksba8 libldap-2.4-2 \
+    libldap-common libnpth0 libreadline7 libsasl2-2 libsasl2-modules-db libsqlite3-0 \
+    libssl1.1 lsb-base openssl pinentry-curses readline-common
+sudo apt-get install binfmt-support qemu-user-static python-dbus python-debian \
+    python-yaml python-apt
 sudo dpkg -i ubuntu-build-service/packages/*
 sudo apt-get install -f
 ```
