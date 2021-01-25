@@ -94,6 +94,7 @@ RUN usermod -aG sudo amarula
 RUN chown -R amarula:amarula /home/amarula
 RUN passwd -d amarula
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN mkdir /home/amarula/rk-rootfs-build
 
 USER amarula
 WORKDIR /home/amarula
