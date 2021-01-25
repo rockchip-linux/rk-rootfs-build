@@ -26,7 +26,7 @@ fi
 
 cd ubuntu-build-service/$RELEASE-$TARGET-$ARCH
 
-echo -e "\033[36m Staring Download...... \033[0m"
+echo -e "\033[36m Starting Download...... \033[0m"
 
 make clean
 
