@@ -4,6 +4,9 @@ MAINTAINER Giulio Benetti <giulio.benetti@benettiengineering.com>
 LABEL maintainer="Giulio Benetti <giulio.benetti@benettiengineering.com>" \
 description="Container with everything needed to build Rockchip Debian"
 
+ARG GID=1000
+ARG UID=1000
+
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/Rome
 
@@ -60,7 +63,7 @@ RUN set -e; \
   adduser debian-archive-keyring fdisk gcc-8-base gpgv libacl1 libapt-pkg6.0 \
   libattr1 libaudit-common libaudit1 libblkid1 libbz2-1.0 libc6 libcap-ng0 \
   libcom-err2 libdb5.3 libdebconfclient0 libext2fs2 libfdisk1 libffi7 libgcc1 \
-  libgcrypt20 libgmp10 libgnutls30 libgpg-error0 libhoweed5 libidn2-0 \
+  libgcrypt20 libgmp10 libgnutls30 libgpg-error0 libhogweed5 libidn2-0 \
   liblz4-1 liblzma5 libmount1 libncursesw6 libnettle7 libp11-kit0 libpam0g \
   libpcre3 libseccomp2 libselinux1 libsemanage-common libsemanage1 libsepol1 \
   libsmartcols1 libss2 libstdc++6 libsystemd0 libtasn1-6 libtinfo6 libudev1 \
@@ -84,14 +87,16 @@ RUN set -e; \
   nose2==0.9.2 \
   pexpect==4.8.0;
 
-RUN useradd -ms /bin/bash rkdeb-user
-RUN usermod -aG sudo rkdeb-user
-RUN echo "alias ls='ls --color=auto'" >> /home/rkdeb-user/.bashrc
-RUN echo "PS1='\u@\H [\w]$ '" >> /home/rkdeb-user/.bashrc
-RUN chown -R rkdeb-user:rkdeb-user /home/rkdeb-user
+# Create non-root user that will perform the rockchip debian build
+RUN groupadd -g $GID amarula
+RUN useradd -u $UID -g $GID --create-home --shell /bin/bash amarula
+RUN usermod -aG sudo amarula
+RUN chown -R amarula:amarula /home/amarula
+RUN passwd -d amarula
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-USER rkdeb-user
-WORKDIR /home/rkdeb-user
-ENV HOME /home/rkdeb-user
+USER amarula
+WORKDIR /home/amarula
+ENV HOME /home/amarula
 
 CMD ["/bin/bash"]
